@@ -406,4 +406,178 @@ jobs:
                   body: SafeArea(
                     child: Column(
                       children: [
-                        Paddi
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          child: Row(children: [
+                            IconButton(icon: const Icon(Icons.arrow_back_ios, color: Colors.amber), onPressed: () => Navigator.pop(context, coins)),
+                            const Text('TEEN PATTI GOLD', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            Text('🪙 $coins', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                          ]),
+                        ),
+                        Text(msg, style: const TextStyle(color: Colors.amberAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: bot.map((c) => card(c)).toList()),
+                        const SizedBox(height: 10),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: user.map((c) => card(c)).toList()),
+                        const Spacer(),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [20, 50, 100, 500].map((b) => Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: ChoiceChip(label: Text('$b'), selected: bet == b, onSelected: (s) => setState(() => bet = b)))).toList()),
+                        const SizedBox(height: 6),
+                        ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black), onPressed: deal, child: Text('CHAAL ($bet)', style: const TextStyle(fontWeight: FontWeight.bold))),
+                        const SizedBox(height: 6),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            Widget card(String c) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4), width: 46, height: 64,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.amber)),
+              child: Center(child: Text(c, style: TextStyle(fontSize: c == '🂠' ? 24 : 15, color: (c.contains('♥') || c.contains('♦')) ? Colors.red : Colors.black, fontWeight: FontWeight.bold))),
+            );
+          }
+
+          // 4. 7 UP DOWN
+          class SevenGame extends StatefulWidget {
+            final int bal;
+            const SevenGame({super.key, required this.bal});
+            @override
+            State<SevenGame> createState() => _SevenGameState();
+          }
+
+          class _SevenGameState extends State<SevenGame> {
+            late int coins;
+            int chip = 20, d1 = 3, d2 = 4;
+            String target = "7 UP", msg = "Pick Down, 7, or Up";
+
+            @override
+            void initState() { super.initState(); coins = widget.bal; }
+
+            void roll() async {
+              if (coins < chip) return;
+              setState(() { coins -= chip; msg = "Rolling..."; });
+              await Future.delayed(const Duration(milliseconds: 700));
+              final r = Random();
+              int r1 = r.nextInt(6) + 1, r2 = r.nextInt(6) + 1, sum = r1 + r2;
+              String w = sum < 7 ? "7 DOWN" : (sum > 7 ? "7 UP" : "7 EXACT");
+              setState(() {
+                d1 = r1; d2 = r2;
+                if (target == w) {
+                  int win = target == "7 EXACT" ? chip * 5 : chip * 2;
+                  coins += win; msg = "🎉 Total $sum ($w)! +$win";
+                } else { msg = "Total $sum ($w). Lost $chip"; }
+              });
+            }
+
+            @override
+            Widget build(BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async { Navigator.pop(context, coins); return false; },
+                child: Scaffold(
+                  backgroundColor: const Color(0xFF0F172A),
+                  body: SafeArea(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          child: Row(children: [
+                            IconButton(icon: const Icon(Icons.arrow_back_ios, color: Colors.amber), onPressed: () => Navigator.pop(context, coins)),
+                            const Text('7 UP DOWN', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            Text('🪙 $coins', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                          ]),
+                        ),
+                        Text(msg, style: const TextStyle(color: Colors.amberAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [dBox(d1), const SizedBox(width: 14), dBox(d2)]),
+                        const Spacer(),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: ['7 DOWN', '7 EXACT', '7 UP'].map((z) => Padding(padding: const EdgeInsets.symmetric(horizontal: 6), child: ChoiceChip(label: Text(z), selected: target == z, onSelected: (s) => setState(() => target = z)))).toList()),
+                        const SizedBox(height: 6),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [20, 50, 100, 500].map((c) => Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: ChoiceChip(label: Text('$c'), selected: chip == c, onSelected: (s) => setState(() => chip = c)))).toList()),
+                        const SizedBox(height: 6),
+                        ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black), onPressed: roll, child: Text('ROLL ($chip)', style: const TextStyle(fontWeight: FontWeight.bold))),
+                        const SizedBox(height: 6),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            Widget dBox(int v) => Container(width: 50, height: 50, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)), child: Center(child: Text('$v', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black))));
+          }
+
+          // 5. ROULETTE ROYALE
+          class RouletteGame extends StatefulWidget {
+            final int bal;
+            const RouletteGame({super.key, required this.bal});
+            @override
+            State<RouletteGame> createState() => _RouletteGameState();
+          }
+
+          class _RouletteGameState extends State<RouletteGame> {
+            late int coins;
+            int chip = 20;
+            String choice = "RED", res = "0", msg = "Pick Red or Black";
+
+            @override
+            void initState() { super.initState(); coins = widget.bal; }
+
+            void spin() async {
+              if (coins < chip) return;
+              setState(() { coins -= chip; msg = "Spinning Wheel..."; });
+              await Future.delayed(const Duration(milliseconds: 800));
+              final r = Random();
+              int n = r.nextInt(37);
+              bool isRed = n % 2 != 0;
+              String col = n == 0 ? "GREEN" : (isRed ? "RED" : "BLACK");
+              setState(() {
+                res = "$n ($col)";
+                if (choice == col) {
+                  int win = chip * 2; coins += win; msg = "🎉 Landed on $res! +$win";
+                } else { msg = "Landed on $res. Lost $chip"; }
+              });
+            }
+
+            @override
+            Widget build(BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async { Navigator.pop(context, coins); return false; },
+                child: Scaffold(
+                  backgroundColor: const Color(0xFF0F172A),
+                  body: SafeArea(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          child: Row(children: [
+                            IconButton(icon: const Icon(Icons.arrow_back_ios, color: Colors.amber), onPressed: () => Navigator.pop(context, coins)),
+                            const Text('ROULETTE ROYALE', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            Text('🪙 $coins', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                          ]),
+                        ),
+                        Text(msg, style: const TextStyle(color: Colors.amberAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        CircleAvatar(radius: 36, backgroundColor: Colors.amber, child: CircleAvatar(radius: 32, backgroundColor: Colors.black87, child: Text(res, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)))),
+                        const Spacer(),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: ['RED', 'BLACK'].map((c) => Padding(padding: const EdgeInsets.symmetric(horizontal: 6), child: ChoiceChip(label: Text(c), selected: choice == c, onSelected: (s) => setState(() => choice = c)))).toList()),
+                        const SizedBox(height: 6),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [20, 50, 100, 500].map((c) => Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: ChoiceChip(label: Text('$c'), selected: chip == c, onSelected: (s) => setState(() => chip = c)))).toList()),
+                        const SizedBox(height: 6),
+                        ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black), onPressed: spin, child: Text('SPIN ($chip)', style: const TextStyle(fontWeight: FontWeight.bold))),
+                        const SizedBox(height: 6),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+          EOF
+          flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PK55-FullPlatform-APK
+          path: pk55_app/build/app/outputs/flutter-apk/app-release.apk
