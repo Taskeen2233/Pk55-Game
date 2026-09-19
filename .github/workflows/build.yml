@@ -1,5 +1,3 @@
-
-
 name: Build PK55 APK
 
 on:
@@ -43,60 +41,93 @@ jobs:
             @override
             Widget build(BuildContext context) {
               return MaterialApp(
-                title: 'PK55 Game',
+                title: 'PK55 Official Platform',
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData.dark(),
-                home: const PK55LobbyPage(),
+                home: const PK55MegaLobby(),
               );
             }
           }
 
-          class PK55LobbyPage extends StatefulWidget {
-            const PK55LobbyPage({super.key});
+          class PK55MegaLobby extends StatefulWidget {
+            const PK55MegaLobby({super.key});
 
             @override
-            State<PK55LobbyPage> createState() => _PK55LobbyPageState();
+            State<PK55MegaLobby> createState() => _PK55MegaLobbyState();
           }
 
-          class _PK55LobbyPageState extends State<PK55LobbyPage> {
-            int coins = 10000;
+          class _PK55MegaLobbyState extends State<PK55MegaLobby> {
+            int coins = 15000;
+            String selectedCategory = 'All';
 
-            final List<Map<String, dynamic>> games = [
-              {'name': 'Teen Patti', 'icon': Icons.style, 'color': Colors.redAccent},
-              {'name': 'Dragon Tiger', 'icon': Icons.flash_on, 'color': Colors.orangeAccent},
-              {'name': 'Roulette', 'icon': Icons.pie_chart, 'color': Colors.purpleAccent},
-              {'name': 'Lucky Spin', 'icon': Icons.casino, 'color': Colors.amber},
-              {'name': '7 Up Down', 'icon': Icons.trending_up, 'color': Colors.blueAccent},
-              {'name': 'Ludo Gold', 'icon': Icons.games, 'color': Colors.greenAccent},
+            final List<String> categories = ['All', 'Cards', 'Slots', 'Live Casino', 'Dice'];
+
+            final List<Map<String, dynamic>> allGames = [
+              {'name': 'Teen Patti', 'category': 'Cards', 'icon': Icons.style, 'color': Colors.redAccent, 'tag': 'HOT'},
+              {'name': 'Dragon Tiger', 'category': 'Live Casino', 'icon': Icons.flash_on, 'color': Colors.orangeAccent, 'tag': 'VIP'},
+              {'name': 'Andar Bahar', 'category': 'Cards', 'icon': Icons.swap_horiz, 'color': Colors.deepOrange, 'tag': 'POPULAR'},
+              {'name': 'Crash (Aviator)', 'category': 'Live Casino', 'icon': Icons.flight_takeoff, 'color': Colors.purpleAccent, 'tag': 'HOT'},
+              {'name': 'Roulette', 'category': 'Live Casino', 'icon': Icons.pie_chart, 'color': Colors.indigoAccent, 'tag': 'PRO'},
+              {'name': '7 Up Down', 'category': 'Dice', 'icon': Icons.trending_up, 'color': Colors.blueAccent, 'tag': 'WIN'},
+              {'name': 'Lucky Spin', 'category': 'Slots', 'icon': Icons.casino, 'color': Colors.amber, 'tag': 'FREE'},
+              {'name': 'Ludo Gold', 'category': 'Dice', 'icon': Icons.games, 'color': Colors.greenAccent, 'tag': '24/7'},
+              {'name': 'Rummy Plus', 'category': 'Cards', 'icon': Icons.view_carousel, 'color': Colors.pinkAccent, 'tag': 'CLASSIC'},
+              {'name': 'Poker King', 'category': 'Cards', 'icon': Icons.diamond, 'color': Colors.cyanAccent, 'tag': 'VIP'},
+              {'name': 'Car Roulette', 'category': 'Live Casino', 'icon': Icons.directions_car, 'color': Colors.yellowAccent, 'tag': 'FAST'},
+              {'name': 'Zoo Roulette', 'category': 'Live Casino', 'icon': Icons.pets, 'color': Colors.tealAccent, 'tag': 'TOP'},
+              {'name': 'Fruit Classic', 'category': 'Slots', 'icon': Icons.lunch_dining, 'color': Colors.amberAccent, 'tag': '777'},
+              {'name': 'Mega Slots 777', 'category': 'Slots', 'icon': Icons.monetization_on, 'color': Colors.deepPurpleAccent, 'tag': 'JACKPOT'},
+              {'name': 'Mines Gold', 'category': 'Dice', 'icon': Icons.warning_amber_rounded, 'color': Colors.lightGreenAccent, 'tag': 'HOT'},
+              {'name': 'Fish Hunter', 'category': 'Slots', 'icon': Icons.water, 'color': Colors.lightBlueAccent, 'tag': 'NEW'},
+              {'name': 'Baccarat Pro', 'category': 'Cards', 'icon': Icons.security, 'color': Colors.limeAccent, 'tag': 'VIP'},
+              {'name': 'Blackjack 21', 'category': 'Cards', 'icon': Icons.credit_card, 'color': Colors.red, 'tag': 'PRO'},
+              {'name': 'Jhandi Munda', 'category': 'Dice', 'icon': Icons.flag, 'color': Colors.amber, 'tag': 'DESI'},
+              {'name': 'Fortune Tiger', 'category': 'Slots', 'icon': Icons.wb_sunny, 'color': Colors.deepOrangeAccent, 'tag': 'LUCKY'},
+              {'name': 'Golden Wheel', 'category': 'Slots', 'icon': Icons.stars, 'color': Colors.purple, 'tag': 'WIN'},
+              {'name': 'Dice Duel', 'category': 'Dice', 'icon': Icons.filter_6, 'color': Colors.cyan, 'tag': 'FAST'},
+              {'name': 'Super Keno', 'category': 'Live Casino', 'icon': Icons.grid_view, 'color': Colors.green, 'tag': 'LUCK'},
+              {'name': 'Golden Horse', 'category': 'Live Casino', 'icon': Icons.sports_kabaddi, 'color': Colors.orange, 'tag': 'RACE'},
             ];
 
             @override
             Widget build(BuildContext context) {
+              final filteredGames = selectedCategory == 'All'
+                  ? allGames
+                  : allGames.where((g) => g['category'] == selectedCategory).toList();
+
               return Scaffold(
-                backgroundColor: const Color(0xFF0A0E1A),
+                backgroundColor: const Color(0xFF070B19),
                 appBar: AppBar(
-                  backgroundColor: const Color(0xFF131B2E),
-                  title: const Text(
-                    'PK55 VIP LOBBY',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, letterSpacing: 1.5),
+                  backgroundColor: const Color(0xFF0F172A),
+                  elevation: 4,
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.military_tech, color: Colors.amber, size: 24),
+                      SizedBox(width: 6),
+                      Text(
+                        'PK55 MEGA CASINO',
+                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.amber, letterSpacing: 1.2, fontSize: 18),
+                      ),
+                    ],
                   ),
                   centerTitle: true,
                   actions: [
                     Container(
                       margin: const EdgeInsets.only(right: 12, top: 10, bottom: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Colors.black45,
+                        gradient: const LinearGradient(colors: [Colors.amber, Colors.orangeAccent]),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.amber, width: 1.5),
+                        boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 4)],
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.monetization_on, color: Colors.amber, size: 18),
-                          const SizedBox(width: 6),
+                          const Icon(Icons.stars, color: Colors.black, size: 18),
+                          const SizedBox(width: 4),
                           Text(
                             '$coins',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
                           ),
                         ],
                       ),
@@ -105,20 +136,18 @@ jobs:
                 ),
                 body: Column(
                   children: [
+                    // Banner Card
                     Container(
-                      margin: const EdgeInsets.all(14),
-                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF1E293B), Color(0xFF334155)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.amber, width: 1.5),
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 4)),
-                        ],
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.amber.withOpacity(0.8), width: 1.5),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,71 +155,136 @@ jobs:
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text('VIP WELCOME BONUS', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 15)),
+                              Text('VIP SUPER BONUS', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 15)),
                               SizedBox(height: 4),
-                              Text('Instant Withdrawal 24/7', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                              Text('24/7 JazzCash & EasyPaisa Withdrawal', style: TextStyle(color: Colors.white70, fontSize: 11)),
                             ],
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.amber,
                               foregroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             ),
                             onPressed: () {
                               setState(() {
-                                coins += 1000;
+                                coins += 2000;
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('+1,000 Coins Added to Wallet!')),
+                                const SnackBar(content: Text('+2,000 Free Chips Added!')),
                               );
                             },
-                            child: const Text('CLAIM', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: const Text('CLAIM FREE', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
                           ),
                         ],
                       ),
                     ),
+
+                    // Filter Categories Bar
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          final cat = categories[index];
+                          final isSelected = cat == selectedCategory;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: FilterChip(
+                              label: Text(
+                                cat,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.black : Colors.white70,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              selected: isSelected,
+                              selectedColor: Colors.amber,
+                              backgroundColor: const Color(0xFF161F36),
+                              checkmarkColor: Colors.black,
+                              onSelected: (selected) {
+                                setState(() {
+                                  selectedCategory = cat;
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // 24 Games Grid
                     Expanded(
                       child: GridView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1.1,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 1.15,
                         ),
-                        itemCount: games.length,
+                        itemCount: filteredGames.length,
                         itemBuilder: (context, index) {
-                          final game = games[index];
+                          final game = filteredGames[index];
                           return Card(
-                            color: const Color(0xFF161F36),
+                            color: const Color(0xFF131B2E),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              side: BorderSide(color: (game['color'] as Color).withOpacity(0.6), width: 1.5),
+                              borderRadius: BorderRadius.circular(14),
+                              side: BorderSide(color: (game['color'] as Color).withOpacity(0.5), width: 1.5),
                             ),
-                            elevation: 5,
+                            elevation: 4,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(14),
                               onTap: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Opening ${game['name']} Table...')),
+                                  SnackBar(content: Text('Starting ${game['name']} Table...')),
                                 );
                               },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              child: Stack(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 28,
-                                    backgroundColor: (game['color'] as Color).withOpacity(0.2),
-                                    child: Icon(game['icon'] as IconData, size: 32, color: game['color'] as Color),
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: (game['color'] as Color).withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        game['tag'] as String,
+                                        style: const TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.w900),
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    game['name'] as String,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                                  Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 26,
+                                          backgroundColor: (game['color'] as Color).withOpacity(0.2),
+                                          child: Icon(game['icon'] as IconData, size: 28, color: game['color'] as Color),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          game['name'] as String,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        const Text(
+                                          'PLAY NOW',
+                                          style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  const Text('PLAY NOW', style: TextStyle(color: Colors.greenAccent, fontSize: 11, fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
