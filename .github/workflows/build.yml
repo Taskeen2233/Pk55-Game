@@ -1,4 +1,3 @@
-
 name: Build PK55 APK
 
 on:
@@ -11,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Java JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -25,7 +24,7 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Create PK55 App
+      - name: Create Game App
         run: |
           flutter create --org com.pk55.game --project-name pk55 pk55_app
           cd pk55_app
@@ -33,259 +32,110 @@ jobs:
           import 'dart:math';
           import 'package:flutter/material.dart';
 
-          void main() {
-            runApp(const PK55GameApp());
-          }
+          void main() => runApp(const PK55App());
 
-          class PK55GameApp extends StatelessWidget {
-            const PK55GameApp({super.key});
+          class PK55App extends StatelessWidget {
+            const PK55App({super.key});
 
             @override
             Widget build(BuildContext context) {
               return MaterialApp(
-                title: 'PK55 Official Platform',
+                title: 'PK55 Casino',
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData.dark(),
-                home: const PK55MegaLobby(),
+                home: const MainLobby(),
               );
             }
           }
 
-          class PK55MegaLobby extends StatefulWidget {
-            const PK55MegaLobby({super.key});
+          class MainLobby extends StatefulWidget {
+            const MainLobby({super.key});
 
             @override
-            State<PK55MegaLobby> createState() => _PK55MegaLobbyState();
+            State<MainLobby> createState() => _MainLobbyState();
           }
 
-          class _PK55MegaLobbyState extends State<PK55MegaLobby> {
-            int coins = 15000;
-            String selectedCategory = 'All';
+          class _MainLobbyState extends State<MainLobby> {
+            int coins = 10000;
 
-            final List<String> categories = ['All', 'Cards', 'Slots', 'Live Casino', 'Dice'];
-
-            final List<Map<String, dynamic>> allGames = [
-              {'name': 'Teen Patti', 'category': 'Cards', 'icon': Icons.style, 'color': Colors.redAccent, 'tag': 'HOT'},
-              {'name': 'Dragon Tiger', 'category': 'Live Casino', 'icon': Icons.flash_on, 'color': Colors.orangeAccent, 'tag': 'VIP'},
-              {'name': 'Andar Bahar', 'category': 'Cards', 'icon': Icons.swap_horiz, 'color': Colors.deepOrange, 'tag': 'POPULAR'},
-              {'name': 'Crash (Aviator)', 'category': 'Live Casino', 'icon': Icons.flight_takeoff, 'color': Colors.purpleAccent, 'tag': 'HOT'},
-              {'name': 'Roulette', 'category': 'Live Casino', 'icon': Icons.pie_chart, 'color': Colors.indigoAccent, 'tag': 'PRO'},
-              {'name': '7 Up Down', 'category': 'Dice', 'icon': Icons.trending_up, 'color': Colors.blueAccent, 'tag': 'WIN'},
-              {'name': 'Lucky Spin', 'category': 'Slots', 'icon': Icons.casino, 'color': Colors.amber, 'tag': 'FREE'},
-              {'name': 'Ludo Gold', 'category': 'Dice', 'icon': Icons.games, 'color': Colors.greenAccent, 'tag': '24/7'},
-              {'name': 'Rummy Plus', 'category': 'Cards', 'icon': Icons.view_carousel, 'color': Colors.pinkAccent, 'tag': 'CLASSIC'},
-              {'name': 'Poker King', 'category': 'Cards', 'icon': Icons.diamond, 'color': Colors.cyanAccent, 'tag': 'VIP'},
-              {'name': 'Car Roulette', 'category': 'Live Casino', 'icon': Icons.directions_car, 'color': Colors.yellowAccent, 'tag': 'FAST'},
-              {'name': 'Zoo Roulette', 'category': 'Live Casino', 'icon': Icons.pets, 'color': Colors.tealAccent, 'tag': 'TOP'},
-              {'name': 'Fruit Classic', 'category': 'Slots', 'icon': Icons.lunch_dining, 'color': Colors.amberAccent, 'tag': '777'},
-              {'name': 'Mega Slots 777', 'category': 'Slots', 'icon': Icons.monetization_on, 'color': Colors.deepPurpleAccent, 'tag': 'JACKPOT'},
-              {'name': 'Mines Gold', 'category': 'Dice', 'icon': Icons.warning_amber_rounded, 'color': Colors.lightGreenAccent, 'tag': 'HOT'},
-              {'name': 'Fish Hunter', 'category': 'Slots', 'icon': Icons.water, 'color': Colors.lightBlueAccent, 'tag': 'NEW'},
-              {'name': 'Baccarat Pro', 'category': 'Cards', 'icon': Icons.security, 'color': Colors.limeAccent, 'tag': 'VIP'},
-              {'name': 'Blackjack 21', 'category': 'Cards', 'icon': Icons.credit_card, 'color': Colors.red, 'tag': 'PRO'},
-              {'name': 'Jhandi Munda', 'category': 'Dice', 'icon': Icons.flag, 'color': Colors.amber, 'tag': 'DESI'},
-              {'name': 'Fortune Tiger', 'category': 'Slots', 'icon': Icons.wb_sunny, 'color': Colors.deepOrangeAccent, 'tag': 'LUCKY'},
-              {'name': 'Golden Wheel', 'category': 'Slots', 'icon': Icons.stars, 'color': Colors.purple, 'tag': 'WIN'},
-              {'name': 'Dice Duel', 'category': 'Dice', 'icon': Icons.filter_6, 'color': Colors.cyan, 'tag': 'FAST'},
-              {'name': 'Super Keno', 'category': 'Live Casino', 'icon': Icons.grid_view, 'color': Colors.green, 'tag': 'LUCK'},
-              {'name': 'Golden Horse', 'category': 'Live Casino', 'icon': Icons.sports_kabaddi, 'color': Colors.orange, 'tag': 'RACE'},
+            final List<String> games = [
+              'Teen Patti', 'Dragon Tiger', 'Lucky Spin', '7 Up Down',
+              'Crash Aviator', 'Fruit Classic', 'Roulette', 'Poker King',
+              'Andar Bahar', 'Mega Slots', 'Mines Gold', 'Ludo Gold',
+              'Baccarat', 'Blackjack', 'Jhandi Munda', 'Fortune Tiger',
+              'Zoo Roulette', 'Car Roulette', 'Fish Hunter', 'Golden Wheel',
+              'Dice Duel', 'Super Keno', 'Rummy Plus', 'Golden Horse'
             ];
 
-            void openGameScreen(Map<String, dynamic> game) async {
-              final updatedCoins = await Navigator.push<int>(
+            void openGame(String name) async {
+              final res = await Navigator.push<int>(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ActiveGameRoom(game: game, userCoins: coins),
-                ),
+                MaterialPageRoute(builder: (c) => PlayScreen(name: name, coins: coins)),
               );
-              if (updatedCoins != null) {
-                setState(() {
-                  coins = updatedCoins;
-                });
-              }
+              if (res != null) setState(() => coins = res);
             }
 
             @override
             Widget build(BuildContext context) {
-              final filteredGames = selectedCategory == 'All'
-                  ? allGames
-                  : allGames.where((g) => g['category'] == selectedCategory).toList();
-
               return Scaffold(
                 backgroundColor: const Color(0xFF070B19),
                 appBar: AppBar(
                   backgroundColor: const Color(0xFF0F172A),
-                  elevation: 4,
-                  title: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.military_tech, color: Colors.amber, size: 24),
-                      SizedBox(width: 6),
-                      Text(
-                        'PK55 VIP LOBBY',
-                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.amber, letterSpacing: 1.2, fontSize: 18),
-                      ),
-                    ],
-                  ),
+                  title: const Text('PK55 CASINO', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
                   centerTitle: true,
                   actions: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 12, top: 10, bottom: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: [Colors.amber, Colors.orangeAccent]),
-                        borderRadius: BorderRadius.circular(20),
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(15)),
+                        child: Text('🪙 $coins', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.monetization_on, color: Colors.black, size: 18),
-                          const SizedBox(width: 4),
-                          Text(
-                            '$coins',
-                            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
+                    )
                   ],
                 ),
                 body: Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF1E293B), Color(0xFF334155)],
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.amber, width: 1.5),
-                      ),
+                      margin: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(color: const Color(0xFF1E293B), borderRadius: BorderRadius.circular(10)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text('VIP DAILY BONUS', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 15)),
-                              SizedBox(height: 4),
-                              Text('Tap to claim instant free chips', style: TextStyle(color: Colors.white70, fontSize: 11)),
-                            ],
-                          ),
+                          const Text('VIP DAILY BONUS', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber,
-                              foregroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                coins += 2000;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('+2,000 Free Coins Added!')),
-                              );
-                            },
-                            child: const Text('CLAIM', style: TextStyle(fontWeight: FontWeight.w900)),
-                          ),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black),
+                            onPressed: () => setState(() => coins += 2000),
+                            child: const Text('GET +2000'),
+                          )
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 40,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          final cat = categories[index];
-                          final isSelected = cat == selectedCategory;
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: FilterChip(
-                              label: Text(
-                                cat,
-                                style: TextStyle(
-                                  color: isSelected ? Colors.black : Colors.white70,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              selected: isSelected,
-                              selectedColor: Colors.amber,
-                              backgroundColor: const Color(0xFF161F36),
-                              onSelected: (selected) {
-                                setState(() {
-                                  selectedCategory = cat;
-                                });
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     Expanded(
                       child: GridView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 1.15,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 1.2,
                         ),
-                        itemCount: filteredGames.length,
-                        itemBuilder: (context, index) {
-                          final game = filteredGames[index];
+                        itemCount: games.length,
+                        itemBuilder: (c, i) {
                           return Card(
                             color: const Color(0xFF131B2E),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                              side: BorderSide(color: (game['color'] as Color).withOpacity(0.6), width: 1.5),
-                            ),
-                            elevation: 4,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(14),
-                              onTap: () => openGameScreen(game),
-                              child: Stack(
+                              onTap: () => openGame(games[i]),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: (game['color'] as Color).withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        game['tag'] as String,
-                                        style: const TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.w900),
-                                      ),
-                                    ),
-                                  ),
-                                  Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 26,
-                                          backgroundColor: (game['color'] as Color).withOpacity(0.2),
-                                          child: Icon(game['icon'] as IconData, size: 28, color: game['color'] as Color),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          game['name'] as String,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        const Text(
-                                          'PLAY NOW',
-                                          style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  const Icon(Icons.casino, color: Colors.amber, size: 30),
+                                  const SizedBox(height: 6),
+                                  Text(games[i], textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 4),
+                                  const Text('PLAY', style: TextStyle(color: Colors.greenAccent, fontSize: 11)),
                                 ],
                               ),
                             ),
@@ -299,61 +149,42 @@ jobs:
             }
           }
 
-          class ActiveGameRoom extends StatefulWidget {
-            final Map<String, dynamic> game;
-            final int userCoins;
-
-            const ActiveGameRoom({super.key, required this.game, required this.userCoins});
+          class PlayScreen extends StatefulWidget {
+            final String name;
+            final int coins;
+            const PlayScreen({super.key, required this.name, required this.coins});
 
             @override
-            State<ActiveGameRoom> createState() => _ActiveGameRoomState();
+            State<PlayScreen> createState() => _PlayScreenState();
           }
 
-          class _ActiveGameRoomState extends State<ActiveGameRoom> {
+          class _PlayScreenState extends State<PlayScreen> {
             late int currentCoins;
-            int betAmount = 100;
-            String resultMessage = "Place your bet & Tap PLAY!";
-            bool isRolling = false;
-            String displayItem = "🎰";
+            int bet = 100;
+            String msg = "Bet lagao te Play dabao!";
+            String symbol = "🎰";
 
             @override
             void initState() {
               super.initState();
-              currentCoins = widget.userCoins;
+              currentCoins = widget.coins;
             }
 
-            void playGameAction() async {
-              if (currentCoins < betAmount) {
-                setState(() {
-                  resultMessage = "Not enough coins! Claim bonus in lobby.";
-                });
+            void play() {
+              if (currentCoins < bet) {
+                setState(() => msg = "Sikke muk gaye!");
                 return;
               }
-
               setState(() {
-                isRolling = true;
-                currentCoins -= betAmount;
-                resultMessage = "Playing round...";
-              });
-
-              await Future.delayed(const Duration(milliseconds: 700));
-
-              final random = Random();
-              final isWin = random.nextBool();
-              final winMultiplier = random.nextInt(3) + 2;
-
-              final symbols = ['💎', '👑', '🃏', '🎲', '⚡', '🍒', '7️⃣'];
-              final chosenSymbol = symbols[random.nextInt(symbols.length)];
-
-              setState(() {
-                isRolling = false;
-                displayItem = chosenSymbol;
-                if (isWin) {
-                  final winAmount = betAmount * winMultiplier;
-                  currentCoins += winAmount;
-                  resultMessage = "🎉 YOU WON +$winAmount COINS! ($chosenSymbol)";
+                currentCoins -= bet;
+                final win = Random().nextBool();
+                final list = ['💎', '👑', '7️⃣', '🎲', '⚡'];
+                symbol = list[Random().nextInt(list.length)];
+                if (win) {
+                  currentCoins += bet * 2;
+                  msg = "🎉 Jitt gaye! +${bet * 2}";
                 } else {
-                  resultMessage = "😢 Bad Luck! Lost $betAmount. Try again!";
+                  msg = "😢 Haar gaye! Try karo.";
                 }
               });
             }
@@ -366,53 +197,59 @@ jobs:
                   return false;
                 },
                 child: Scaffold(
-                  backgroundColor: const Color(0xFF070B19),
                   appBar: AppBar(
-                    backgroundColor: const Color(0xFF0F172A),
-                    title: Text(widget.game['name'] as String, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
+                    title: Text(widget.name),
                     leading: IconButton(
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () => Navigator.pop(context, currentCoins),
                     ),
                     actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: Center(
-                          child: Text(
-                            '🪙 $currentCoins',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.amberAccent),
-                          ),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: Text('🪙 $currentCoins', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
                         ),
                       )
                     ],
                   ),
                   body: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 140,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF131B2E),
-                              shape: BoxShape.circle,
-                              border: Border.all(color: widget.game['color'] as Color, width: 4),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: (widget.game['color'] as Color).withOpacity(0.4),
-                                  blurRadius: 15,
-                                  spreadRadius: 2,
-                                )
-                              ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(symbol, style: const TextStyle(fontSize: 60)),
+                        const SizedBox(height: 20),
+                        Text(msg, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 25),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [100, 500, 1000].map((b) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: bet == b ? Colors.amber : Colors.grey[800], foregroundColor: bet == b ? Colors.black : Colors.white),
+                              onPressed: () => setState(() => bet = b),
+                              child: Text('$b'),
                             ),
-                            child: Center(
-                              child: isRolling
-                                  ? const CircularProgressIndicator(color: Colors.amber)
-                                  : Text(
-                                      displayItem,
-                                      style: const TextStyle(fontSize: 60),
-                                    ),
-                            ),
-             
+                          )).toList(),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+                          onPressed: play,
+                          child: Text('PLAY ($bet)'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+          EOF
+          flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PK55-Game-Release-APK
+          path: pk55_app/build/app/outputs/flutter-apk/app-release.apk
+          
